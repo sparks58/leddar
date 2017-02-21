@@ -1,0 +1,1 @@
+/usr/bin/cc     CMakeFiles/Main.dir/Main.c.o CMakeFiles/Main.dir/Leddar.c.o CMakeFiles/Main.dir/ModBus.c.o CMakeFiles/Main.dir/OS.c.o  -o Main -rdynamic -lpthread 

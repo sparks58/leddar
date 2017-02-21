@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( LeddarUsb )
+find_package ( Threads REQUIRED )
+add_executable( Main Main.c Leddar.c ModBus.c OS.c )
+target_link_libraries ( Main ${CMAKE_THREAD_LIBS_INIT} )

@@ -16,6 +16,7 @@ void *capture(void *arg);
 
 static pthread_mutex_t dataLock;
 static int distances[16];
+static double amplitudes[16];
 
 int
 main( int argc, char *argv[] ) {
@@ -110,6 +111,8 @@ void *capture(void *arg) {
 				for( i=0; i<lAcquisition.mDetectionCount; ++i ) {
 					short segment = lDetections[i].mSegment;
 					int distance = lDetections[i].mDistance;
+					double amplitude = lDetections[i].mAmplitude;
+					amplitudes[segment] = amplitude;
 					distances[segment] = distance;
 				}
 				pthread_mutex_unlock(&dataLock);
@@ -147,8 +150,10 @@ void *handleClient(void *arg) {
       // obtain the lock and copy the data
       pthread_mutex_lock(&dataLock);
       int copyDistances[16];
+      double copyAmplitudes[16];
       for ( int i = 0; i < 16; i++ ) {
     	  copyDistances[i] = distances[i];
+    	  copyAmplitudes[i] = amplitudes[i];
       }
       pthread_mutex_unlock(&dataLock);
 
@@ -156,6 +161,10 @@ void *handleClient(void *arg) {
       int sendBufferLen = 0;
       for ( int i = 0; i < 16; i++ ) {
         sendBufferLen += sprintf(sendBuffer + sendBufferLen, "%d=%d\n", i, copyDistances[i]);
+      }
+      for( int j = 0; j < 16; j++ )
+      {
+      	sendBufferLen += sprintf(sendBuffer + sendBufferLen, "%d=%f\n", j, copyAmplitudes[j]);
       }
       sendBufferLen += sprintf(sendBuffer + sendBufferLen, "\n");
 
